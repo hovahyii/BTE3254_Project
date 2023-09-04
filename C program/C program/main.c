@@ -69,8 +69,8 @@ void pwm_init() {
 }
 
 void led_init() {
-	DDRC |= (1 << PC0) | (1 << PC1) | (1 << PC2); // Set PC0, PC1, PC2 as output pins for LEDs
-	PORTC &= ~((1 << PC0) | (1 << PC1) | (1 << PC2)); // Turn off LEDs initially
+	DDRC = 0x1F; // Set PC0, PC1, PC2, PC3, PC4 as output pins for LEDs
+	PORTC = 0x00; // Turn off LEDs initially
 }
 
 void external_interrupt_init() {
@@ -135,7 +135,7 @@ void normalMode(){
 		lcd_display_welcome();
 
 		// Turn on LEDs and display a message
-		PORTC |= (1 << PC0) | (1 << PC1) | (1 << PC2); // Turn on LEDs
+		PORTC = 0x0F; // Turn on LEDs
 		lcd_display_detection();
 
 		// Read temperature from LM35 (ADC0/PF0)
@@ -195,16 +195,15 @@ int main(void) {
 			
 				if (distance <= 150) { // less than 1.5 m
 
-					
 					if (PINB == 0xFE) { // Button 1 (PB0)
-						PORTC &= ~(1 << PC0); // Turn off LED1 (PC0)
+						PORTC = 0x0E; // Turn off LED1 (PC0)
 						PORTA = 0x05;
 						lcd_clrscr();
 						lcd_puts("LED1 Switched Off");
 						_delay_ms(50);
 					}
 					else if (PINB == 0xFD) { // Button 2 (PB1)
-						PORTC &= ~(1 << PC1); // Turn off LED2 (PC1)
+						PORTC = 0x0D; // Turn off LED2 (PC1)
 						PORTA = 0x05;
 						lcd_clrscr();
 						lcd_puts("LED2 Switched Off");
@@ -212,7 +211,7 @@ int main(void) {
 
 					}
 					else if (PINB == 0xFB) { // Button 3 (PB2)
-						PORTC &= ~(1 << PC2); // Turn off LED3 (PC2)
+						PORTC = 0x0B; // Turn off LED3 (PC2)
 						PORTA = 0x05;
 						lcd_clrscr();
 						lcd_puts("LED3 Switched Off");
@@ -222,13 +221,14 @@ int main(void) {
 					else if (PINB == 0xF7) { // Button 4 (Fan Control) (PB3) 
 						// Implement code to control the fan based on button press
 						// Example: Change fanSpeed variable, update fan speed
+						PORTC = 0x0F;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_puts("Fan Switched Off");
 						_delay_ms(50);
 					}
-					else if (PINB == 0xFC) { // Turn off LED1 (PC0) and LED2 (PC1)
-						PORTC = 0x04; // Turn off LED1 (PC0)
+					else if (PINB == 0xFC) { 
+						PORTC = 0x0C; // Turn off LED1 (PC0) and LED2 (PC1)
 						PORTA = 0x05;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -272,7 +272,7 @@ int main(void) {
 
 					}
 					else if (PINB == 0xF6) { //  Turn off LED1 (PC0) and Button 4 (Fan Control) (PB3) 
-						PORTC = 0x06;
+						PORTC = 0x0E;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -282,7 +282,7 @@ int main(void) {
 						_delay_ms(50);
 					}
 					else if (PINB == 0xF5) { //  Turn off LED2 (PC1) and Button 4 (Fan Control) (PB3)
-						PORTC = 0x06;
+						PORTC = 0x0D;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -292,7 +292,7 @@ int main(void) {
 						_delay_ms(50);
 					}
 					else if (PINB == 0xF3) { //  Turn off LED3 (PC2) and Button 4 (Fan Control) (PB3)
-						PORTC = 0x06;
+						PORTC = 0x0B;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -302,7 +302,7 @@ int main(void) {
 						_delay_ms(50);
 					}
 					else if (PINB == 0xF4) { //  Turn off LED1, LED2 and Button 4 (Fan Control) (PB3)
-						PORTC = 0x04;
+						PORTC = 0x0C;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -312,7 +312,7 @@ int main(void) {
 						_delay_ms(50);
 					}
 					else if (PINB == 0xF1) { //  Turn off LED2, LED3 and Button 4 (Fan Control) (PB3)
-						PORTC = 0x01;
+						PORTC = 0x09;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -322,7 +322,7 @@ int main(void) {
 						_delay_ms(50);
 					}
 					else if (PINB == 0xF2) { //  Turn off LED1, LED3 and Button 4 (Fan Control) (PB3)
-						PORTC = 0x02;
+						PORTC = 0x0A;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -332,7 +332,7 @@ int main(void) {
 						_delay_ms(50);
 					}
 					else if (PINB == 0xF0) { //  Turn off LED1, LED2, LED3 and Button 4 (Fan Control) (PB3)
-						PORTC = 0x00;
+						PORTC = 0x08;
 						PORTA = 0x00;
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
@@ -343,13 +343,14 @@ int main(void) {
 					}
 					else {
 						normalMode();
+							
 					}
 					
 					
 					
 				} else {
 					// Turn off LEDs and display a message
-					PORTC &= ~((1 << PC0) | (1 << PC1) | (1 << PC2) ); // Turn off LEDs
+					PORTC = 0x10;
 					PORTA &= ~((1 << PA0) | (1 << PA1) | (1 << PA2) | (1 << PA3)); // Turn off fans
 					lcd_display_no_detection();
 				}
