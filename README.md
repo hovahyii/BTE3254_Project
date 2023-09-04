@@ -4,18 +4,12 @@
 
 The Smart House System is designed to enhance home automation by incorporating various sensors and devices to provide monitoring and control features. This system integrates an LM35 Temperature Sensor, Ultrasonic Sensor (HC-SR04), LCD Display (LM016L), LED control, and a DC Motor (L293D). The system enables temperature monitoring, distance sensing, and control over appliances.
 
-<br/>
-
 ## Author
 - JEHOVAH YII ZUI HON TB20091
-
-<br/>
 
 ## Teammate
 - Muhammad Azri Bin Ahmad  TB20003
 - Muhammad Syazwan Anwar bin Suhaimi TB20037
-
-<br/>
 
 ## Project Functionality
 1. **Temperature Monitoring:**
@@ -29,8 +23,6 @@ The Smart House System is designed to enhance home automation by incorporating v
 4. **Visual Feedback:**
 - LED indicators provide visual feedback for various states of the system.
 - The LCD Display presents data clearly for monitoring purposes.
-
-<br/>
 
 ## Project Benefits
 
@@ -91,11 +83,8 @@ This project showcases the potential of integrating various sensors and devices 
 - Button3 (PB0) to control LED3.
 - Button4 (PB0) to control the motor (on/off).
 
-<br/>
-
 ### Like this project? You can show your appreciation by buying Hovah a coffee ☕
 <a target="_blank" rel="noopener noreferrer" href="https://www.buymeacoffee.com/hovahyii">
 <img src="https://github.com/appcraftstudio/buymeacoffee/raw/master/Images/snapshot-bmc-button.png" width="300" style="max-width:100%;">
 </a>
 
-<br/>

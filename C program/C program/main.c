@@ -126,8 +126,8 @@ ISR(INT7_vect) {
 	lcd_puts("Interrupt detected,");
 	lcd_gotoxy(0, 1);
 	lcd_puts("Auto Switch off");
-	PORTC &= ~((1 << PC0) | (1 << PC1) | (1 << PC2) ); // Turn off LEDs
-	PORTA &= ~((1 << PA0) | (1 << PA1) | (1 << PA2) | (1 << PA3)); // Turn off fans
+	PORTC = 0x00; // Turn off all LEDs
+	PORTA = 0x00; // Turn off all fans
 	_delay_ms(5000);
 }
 
@@ -168,7 +168,10 @@ void normalMode(){
 			fanSpeed = 0; // Turn off fan
 			lcd_clrscr();
 			lcd_gotoxy(0, 0);
+			lcd_puts("Error");
+			lcd_gotoxy(0, 1);
 			lcd_puts("Invalid Temp");
+			_delay_ms(500);
 		}
 		
 		// Display temperature on LCD
