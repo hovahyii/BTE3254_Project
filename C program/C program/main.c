@@ -205,7 +205,7 @@ int main(void) {
 					}
 					else if (PINB == 0xFD) { // Button 2 (PB1)
 						PORTC &= ~(1 << PC1); // Turn off LED2 (PC1)
-						PORTA = 0x0F;
+						PORTA = 0x05;
 						lcd_clrscr();
 						lcd_puts("LED2 Switched Off");
 						_delay_ms(50);

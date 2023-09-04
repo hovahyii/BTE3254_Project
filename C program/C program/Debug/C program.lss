@@ -1290,8 +1290,8 @@ int main(void) {
  b08:	85 b3       	in	r24, 0x15	; 21
  b0a:	8d 7f       	andi	r24, 0xFD	; 253
  b0c:	85 bb       	out	0x15, r24	; 21
-						PORTA = 0x0F;
- b0e:	8f e0       	ldi	r24, 0x0F	; 15
+						PORTA = 0x05;
+ b0e:	85 e0       	ldi	r24, 0x05	; 5
  b10:	8b bb       	out	0x1b, r24	; 27
 						lcd_clrscr();
  b12:	0e 94 be 13 	call	0x277c	; 0x277c <lcd_clrscr>
