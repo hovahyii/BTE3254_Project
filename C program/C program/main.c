@@ -193,7 +193,7 @@ int main(void) {
 
 			uint16_t distance =  measureDistance(); // Calculate distance in centimeters
 			
-				if (distance <= 50) {
+				if (distance <= 150) { // less than 1.5 m
 
 					
 					if (PINB == 0xFE) { // Button 1 (PB0)
