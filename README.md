@@ -58,8 +58,12 @@ This project showcases the potential of integrating various sensors and devices 
 - Connect L293D's IN2 to PA1.
 - Connect L293D's OUT1 to Motor+.
 - Connect L293D's OUT2 to Motor-.
+- Connect L293D's OUT3 to Motor+.
+- Connect L293D's OUT4 to Motor-.
 - EN1 connects to PWM1.
 - EN2 connects to PWM2.
+- PWM1 connects to PB4 and A of Oscillascope.
+- PWM2 connects to PB7 and B of Oscillascope.
 
 ### External Interrupt:
 - Connect the interrupt source (e.g., switch) to PE7.
@@ -72,16 +76,21 @@ This project showcases the potential of integrating various sensors and devices 
 - Connect the sensor's ECHO to PA7.
 
 ### LEDs:
-- LED1 connects to PC0.
-- LED2 connects to PC1.
-- LED3 connects to PC2.
+- LED-Yellow (LED1) connects to PC0.
+- LED-Yellow (LED2) connects to PC1.
+- LED-Yellow (LED3) connects to PC2.
+- LED-Green connects to PC3.
+- LED-Red connects to PC4.
 
 ### Buttons (to control interrupt and LEDs):
-- Button to control when interrupt is 0 to ground.
 - Button1 (PB0) to control LED1.
-- Button2 (PB0) to control LED2.
-- Button3 (PB0) to control LED3.
-- Button4 (PB0) to control the motor (on/off).
+- Button2 (PB1) to control LED2.
+- Button3 (PB2) to control LED3.
+- Button4 (PB3) to control the motor (on/off).
+
+### SW-SPDT (Interrupt)
+- Initially connect to ground.
+- To activate interrupt, the switch is pressed to connect to Vcc.
 
 ### Like this project? You can show your appreciation by buying Hovah a coffee ☕
 <a target="_blank" rel="noopener noreferrer" href="https://www.buymeacoffee.com/hovahyii">

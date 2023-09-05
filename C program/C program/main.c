@@ -202,23 +202,31 @@ int main(void) {
 						PORTC = 0x0E; // Turn off LED1 (PC0)
 						PORTA = 0x05;
 						lcd_clrscr();
-						lcd_puts("LED1 Switched Off");
+						lcd_gotoxy(0, 0);
+						lcd_puts("LED1");
+						lcd_gotoxy(0, 1);
+						lcd_puts("Switched Off");
 						_delay_ms(50);
 					}
 					else if (PINB == 0xFD) { // Button 2 (PB1)
 						PORTC = 0x0D; // Turn off LED2 (PC1)
 						PORTA = 0x05;
-						lcd_clrscr();
-						lcd_puts("LED2 Switched Off");
-						_delay_ms(50);
-
+							lcd_clrscr();
+							lcd_gotoxy(0, 0);
+							lcd_puts("LED2");
+							lcd_gotoxy(0, 1);
+							lcd_puts("Switched Off");
+							_delay_ms(50);
 					}
 					else if (PINB == 0xFB) { // Button 3 (PB2)
 						PORTC = 0x0B; // Turn off LED3 (PC2)
 						PORTA = 0x05;
-						lcd_clrscr();
-						lcd_puts("LED3 Switched Off");
-						_delay_ms(50);
+							lcd_clrscr();
+							lcd_gotoxy(0, 0);
+							lcd_puts("LED3");
+							lcd_gotoxy(0, 1);
+							lcd_puts("Switched Off");
+							_delay_ms(50);
 
 					}
 					else if (PINB == 0xF7) { // Button 4 (Fan Control) (PB3) 
@@ -227,7 +235,12 @@ int main(void) {
 						PORTC = 0x0F;
 						PORTA = 0x00;
 						lcd_clrscr();
-						lcd_puts("Fan Switched Off");
+							lcd_clrscr();
+							lcd_gotoxy(0, 0);
+							lcd_puts("Fans");
+							lcd_gotoxy(0, 1);
+							lcd_puts("Switched Off");
+							_delay_ms(50);
 						_delay_ms(50);
 					}
 					else if (PINB == 0xFC) { 
