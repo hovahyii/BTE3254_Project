@@ -145,34 +145,44 @@ void normalMode(){
 		// The LM35 has a sensitivity of 10 mV/°C and a reference voltage of 5V (AVcc)
 		float temp = (adcValue / 1024.0) * 500.0; // 500 mV/°C
 
-		// Control fan speed based on temperature as you did before
-		if (temp <= 20) {
-			PORTA = 0x00;
-			OCR0 = 0;
-			OCR2 = 0;
-			fanSpeed = 0; // Set fan speed to 0%
+			// Control fan speed based on temperature as you did before
+			if (temp <= 10) {
+				PORTA = 0x00;
+				OCR0 = 0;
+				OCR2 = 0;
+				fanSpeed = 0; // Set fan speed to 0%
+			} else if ((temp >= 11) && (temp <= 20)) {
+				PORTA = 0x05;
+				OCR0 = 100;
+				OCR2 = 100;
+				fanSpeed = 25; // Set fan speed to 50%
 			} else if ((temp >= 21) && (temp <= 30)) {
-			PORTA = 0x05;
-			OCR0 = 155;
-			OCR2 = 155;
-			fanSpeed = 50; // Set fan speed to 50%
-			} else if ((temp >= 31) && (temp <= 50)) {
-			PORTA = 0x05;
-			OCR0 = 255;
-			OCR2 = 255;
-			fanSpeed = 100; // Set fan speed to 100%
+				PORTA = 0x05;
+				OCR0 = 155;
+				OCR2 = 155;
+				fanSpeed = 50; // Set fan speed to 50%
+			} else if ((temp >= 31) && (temp <= 40)) {
+				PORTA = 0x05;
+				OCR0 = 200;
+				OCR2 = 200;
+				fanSpeed = 75; // Set fan speed to 50%
+			} else if ((temp >= 41) && (temp <= 50)) {
+				PORTA = 0x05;
+				OCR0 = 255;
+				OCR2 = 255;
+				fanSpeed = 100; // Set fan speed to 100%
 			} else {
-			PORTA = 0x00;
-			OCR0 = 0;
-			OCR2 = 0;
-			fanSpeed = 0; // Turn off fan
-			lcd_clrscr();
-			lcd_gotoxy(0, 0);
-			lcd_puts("Error");
-			lcd_gotoxy(0, 1);
-			lcd_puts("Invalid Temp");
-			_delay_ms(500);
-		}
+				PORTA = 0x00;
+				OCR0 = 0;
+				OCR2 = 0;
+				fanSpeed = 0; // Turn off fan
+				lcd_clrscr();
+				lcd_gotoxy(0, 0);
+				lcd_puts("Error");
+				lcd_gotoxy(0, 1);
+				lcd_puts("Invalid Temp");
+				_delay_ms(500);
+			}
 		
 		// Display temperature on LCD
 		lcd_display_temperature_fan((int)temp);
