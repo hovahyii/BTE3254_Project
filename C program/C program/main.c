@@ -85,7 +85,7 @@ void lcd_display_welcome() {
 	lcd_puts("Welcome Home,");
 	lcd_gotoxy(0, 1);
 	lcd_puts("Master");
-	_delay_ms(2000);
+	_delay_ms(1000);
 	lcd_clrscr();
 }
 
@@ -131,61 +131,61 @@ ISR(INT7_vect) {
 	_delay_ms(5000);
 }
 
+void temperatureCondition(float temp) 
+{
+	// Control fan speed based on temperature as you did before
+		if (temp <= 10) {
+			PORTA = 0x00;
+			OCR0 = 0;
+			OCR2 = 0;
+			fanSpeed = 0; // Set fan speed to 0%
+		} else if ((temp >= 11) && (temp <= 20)) {
+			PORTA = 0x05;
+			OCR0 = 100;
+			OCR2 = 100;
+			fanSpeed = 25; // Set fan speed to 25%
+		} else if ((temp >= 21) && (temp <= 30)) {
+			PORTA = 0x05;
+			OCR0 = 155;
+			OCR2 = 155;
+			fanSpeed = 50; // Set fan speed to 50%
+		} else if ((temp >= 31) && (temp <= 40)) {
+			PORTA = 0x05;
+			OCR0 = 200;
+			OCR2 = 200;
+			fanSpeed = 75; // Set fan speed to 75%
+		} else if ((temp >= 41) && (temp <= 50)) {
+			PORTA = 0x05;
+			OCR0 = 255;
+			OCR2 = 255;
+			fanSpeed = 100; // Set fan speed to 100%
+		} else {
+			PORTA = 0x00;
+			OCR0 = 0;
+			OCR2 = 0;
+			fanSpeed = 0; // Turn off fan
+			lcd_clrscr();
+			lcd_gotoxy(0, 0);
+			lcd_puts("Error");
+			lcd_gotoxy(0, 1);
+			lcd_puts("Invalid Temp");
+			
+		}
+	_delay_ms(500);
+	// Display temperature on LCD
+	lcd_display_temperature_fan((int)temp);
+	
+}
+
 void normalMode(){
+		
 		lcd_display_welcome();
 
 		// Turn on LEDs and display a message
 		PORTC = 0x0F; // Turn on LEDs
-		lcd_display_detection();
-
-		// Read temperature from LM35 (ADC0/PF0)
-		int adcValue = adc_read(0); // Read from ADC0/PF0
-
-		// Calculate temperature in degrees Celsius
-		// The LM35 has a sensitivity of 10 mV/°C and a reference voltage of 5V (AVcc)
-		float temp = (adcValue / 1024.0) * 500.0; // 500 mV/°C
-
-			// Control fan speed based on temperature as you did before
-			if (temp <= 10) {
-				PORTA = 0x00;
-				OCR0 = 0;
-				OCR2 = 0;
-				fanSpeed = 0; // Set fan speed to 0%
-			} else if ((temp >= 11) && (temp <= 20)) {
-				PORTA = 0x05;
-				OCR0 = 100;
-				OCR2 = 100;
-				fanSpeed = 25; // Set fan speed to 50%
-			} else if ((temp >= 21) && (temp <= 30)) {
-				PORTA = 0x05;
-				OCR0 = 155;
-				OCR2 = 155;
-				fanSpeed = 50; // Set fan speed to 50%
-			} else if ((temp >= 31) && (temp <= 40)) {
-				PORTA = 0x05;
-				OCR0 = 200;
-				OCR2 = 200;
-				fanSpeed = 75; // Set fan speed to 50%
-			} else if ((temp >= 41) && (temp <= 50)) {
-				PORTA = 0x05;
-				OCR0 = 255;
-				OCR2 = 255;
-				fanSpeed = 100; // Set fan speed to 100%
-			} else {
-				PORTA = 0x00;
-				OCR0 = 0;
-				OCR2 = 0;
-				fanSpeed = 0; // Turn off fan
-				lcd_clrscr();
-				lcd_gotoxy(0, 0);
-				lcd_puts("Error");
-				lcd_gotoxy(0, 1);
-				lcd_puts("Invalid Temp");
-				_delay_ms(500);
-			}
 		
-		// Display temperature on LCD
-		lcd_display_temperature_fan((int)temp);
+		lcd_display_detection();
+		
 }
 
 
@@ -200,101 +200,120 @@ int main(void) {
 	DDRB = 0x00;
 	PORTB = 0xFF;
 	
+	
+	
 	sei(); // Enable global interrupts
 
 	while (1) {
+			// Read temperature from LM35 (ADC0/PF0)
+			const int adcValue = adc_read(0); // Read from ADC0/PF0
+
+			// Calculate temperature in degrees Celsius
+			// The LM35 has a sensitivity of 10 mV/°C and a reference voltage of 5V (AVcc)
+			const float temp = (adcValue / 1024.0) * 500.0; // 500 mV/°C
 
 			uint16_t distance =  measureDistance(); // Calculate distance in centimeters
 			
 				if (distance <= 150) { // less than 1.5 m
+					
 
 					if (PINB == 0xFE) { // Button 1 (PB0)
 						PORTC = 0x0E; // Turn off LED1 (PC0)
 						PORTA = 0x05;
+						temperatureCondition(temp);
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("LED1");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(50);
+						_delay_ms(500);
+						
+						
 					}
 					else if (PINB == 0xFD) { // Button 2 (PB1)
 						PORTC = 0x0D; // Turn off LED2 (PC1)
 						PORTA = 0x05;
-							lcd_clrscr();
-							lcd_gotoxy(0, 0);
-							lcd_puts("LED2");
-							lcd_gotoxy(0, 1);
-							lcd_puts("Switched Off");
-							_delay_ms(50);
+						temperatureCondition(temp);
+						lcd_clrscr();
+						lcd_gotoxy(0, 0);
+						lcd_puts("LED2");
+						lcd_gotoxy(0, 1);
+						lcd_puts("Switched Off");
+						_delay_ms(500);
+
 					}
 					else if (PINB == 0xFB) { // Button 3 (PB2)
 						PORTC = 0x0B; // Turn off LED3 (PC2)
 						PORTA = 0x05;
-							lcd_clrscr();
-							lcd_gotoxy(0, 0);
-							lcd_puts("LED3");
-							lcd_gotoxy(0, 1);
-							lcd_puts("Switched Off");
-							_delay_ms(50);
-
+						temperatureCondition(temp);
+						lcd_clrscr();
+						lcd_gotoxy(0, 0);
+						lcd_puts("LED3");
+						lcd_gotoxy(0, 1);
+						lcd_puts("Switched Off");
+						_delay_ms(500);
 					}
 					else if (PINB == 0xF7) { // Button 4 (Fan Control) (PB3) 
-						// Implement code to control the fan based on button press
-						// Example: Change fanSpeed variable, update fan speed
 						PORTC = 0x0F;
 						PORTA = 0x00;
+						temperatureCondition(temp);
 						lcd_clrscr();
-							lcd_clrscr();
-							lcd_gotoxy(0, 0);
-							lcd_puts("Fans");
-							lcd_gotoxy(0, 1);
-							lcd_puts("Switched Off");
-							_delay_ms(50);
-						_delay_ms(50);
+						lcd_clrscr();
+						lcd_gotoxy(0, 0);
+						lcd_puts("Fans");
+						lcd_gotoxy(0, 1);
+						lcd_puts("Switched Off");
+						_delay_ms(500);
+				
+
 					}
 					else if (PINB == 0xFC) { 
 						PORTC = 0x0C; // Turn off LED1 (PC0) and LED2 (PC1)
 						PORTA = 0x05;
+						temperatureCondition(temp);
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("LED1, LED2");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(50);
+						_delay_ms(500);
+
 		
 					} 
 					else if (PINB == 0xFA) { 
 						PORTC = 0x0A;  // Turn off LED1 (PC0) and LED3 (PC2)
 						PORTA = 0x05;
+						temperatureCondition(temp);
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("LED1, LED3");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(50);
+						_delay_ms(500);
 
 					}
 					else if (PINB == 0xF9) { 
 						PORTC = 0x09;  // Turn off LED2 and LED3 (PC2)
 						PORTA = 0x05;
+						temperatureCondition(temp);
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("LED1, LED3");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(50);
+						_delay_ms(500);
 
 					}
 					else if (PINB == 0xF8) { // Turn off all LEDs
 						PORTC = 0x08; 
 						PORTA = 0x05;
+						temperatureCondition(temp);
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("All LEDs");
-						_delay_ms(50);
+						_delay_ms(500);
 
 					}
 					else if (PINB == 0xF6) { //  Turn off LED1 (PC0) and Button 4 (Fan Control) (PB3) 
@@ -305,7 +324,8 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED1, Fans");
-						_delay_ms(50);
+						_delay_ms(500);
+
 					}
 					else if (PINB == 0xF5) { //  Turn off LED2 (PC1) and Button 4 (Fan Control) (PB3)
 						PORTC = 0x0D;
@@ -315,7 +335,8 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED2, Fans");
-						_delay_ms(50);
+						_delay_ms(500);
+
 					}
 					else if (PINB == 0xF3) { //  Turn off LED3 (PC2) and Button 4 (Fan Control) (PB3)
 						PORTC = 0x0B;
@@ -325,7 +346,7 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED3, Fans");
-						_delay_ms(50);
+						_delay_ms(500);
 					}
 					else if (PINB == 0xF4) { //  Turn off LED1, LED2 and Button 4 (Fan Control) (PB3)
 						PORTC = 0x0C;
@@ -335,7 +356,7 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED1, LED2, Fans");
-						_delay_ms(50);
+						_delay_ms(500);
 					}
 					else if (PINB == 0xF1) { //  Turn off LED2, LED3 and Button 4 (Fan Control) (PB3)
 						PORTC = 0x09;
@@ -345,7 +366,7 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED2, LED3, Fans");
-						_delay_ms(50);
+						_delay_ms(500);
 					}
 					else if (PINB == 0xF2) { //  Turn off LED1, LED3 and Button 4 (Fan Control) (PB3)
 						PORTC = 0x0A;
@@ -355,7 +376,7 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED1, LED3, Fans");
-						_delay_ms(50);
+						_delay_ms(500);
 					}
 					else if (PINB == 0xF0) { //  Turn off LED1, LED2, LED3 and Button 4 (Fan Control) (PB3)
 						PORTC = 0x08;
@@ -365,14 +386,14 @@ int main(void) {
 						lcd_puts("Switched Off all");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Fans and LEDs");
-						_delay_ms(50);
+						_delay_ms(500);
 					}
 					else {
 						normalMode();
-							
+						temperatureCondition(temp);
 					}
 					
-					
+			
 					
 				} else {
 					// Turn off LEDs and display a message
