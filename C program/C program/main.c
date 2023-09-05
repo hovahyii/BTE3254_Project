@@ -107,7 +107,7 @@ void lcd_display_temperature_fan(int temp) {
 	sprintf(buffer, "Fan Speed: %d%%", fanSpeed); // Format fan speed
 	lcd_puts(buffer);
 
-	_delay_ms(1000);
+	_delay_ms(500);
 }
 
 void lcd_display_no_detection() {
@@ -133,32 +133,48 @@ ISR(INT7_vect) {
 
 void temperatureCondition(float temp) 
 {
+	if(PINB != 0xF7 && PINB != 0xF6 && PINB != 0xF5 && PINB != 0xF3 && PINB != 0xF4 && PINB != 0xF1 && PINB != 0xF2 && PINB != 0xF0){
 	// Control fan speed based on temperature as you did before
 		if (temp <= 10) {
 			PORTA = 0x00;
 			OCR0 = 0;
 			OCR2 = 0;
 			fanSpeed = 0; // Set fan speed to 0%
+			_delay_ms(200);
+			// Display temperature on LCD
+			lcd_display_temperature_fan((int)temp);
 		} else if ((temp >= 11) && (temp <= 20)) {
 			PORTA = 0x05;
 			OCR0 = 100;
 			OCR2 = 100;
 			fanSpeed = 25; // Set fan speed to 25%
+			_delay_ms(200);
+			// Display temperature on LCD
+			lcd_display_temperature_fan((int)temp);
 		} else if ((temp >= 21) && (temp <= 30)) {
 			PORTA = 0x05;
 			OCR0 = 155;
 			OCR2 = 155;
 			fanSpeed = 50; // Set fan speed to 50%
+			_delay_ms(200);
+			// Display temperature on LCD
+			lcd_display_temperature_fan((int)temp);
 		} else if ((temp >= 31) && (temp <= 40)) {
 			PORTA = 0x05;
 			OCR0 = 200;
 			OCR2 = 200;
 			fanSpeed = 75; // Set fan speed to 75%
+			_delay_ms(200);
+			// Display temperature on LCD
+			lcd_display_temperature_fan((int)temp);
 		} else if ((temp >= 41) && (temp <= 50)) {
 			PORTA = 0x05;
 			OCR0 = 255;
 			OCR2 = 255;
 			fanSpeed = 100; // Set fan speed to 100%
+			_delay_ms(200);
+			// Display temperature on LCD
+			lcd_display_temperature_fan((int)temp);
 		} else {
 			PORTA = 0x00;
 			OCR0 = 0;
@@ -169,12 +185,17 @@ void temperatureCondition(float temp)
 			lcd_puts("Error");
 			lcd_gotoxy(0, 1);
 			lcd_puts("Invalid Temp");
-			
+			_delay_ms(200);
+			// Display temperature on LCD
+			lcd_display_temperature_fan((int)temp);
 		}
-	_delay_ms(500);
-	// Display temperature on LCD
-	lcd_display_temperature_fan((int)temp);
 	
+	}else {
+		_delay_ms(200);
+		// Display temperature on LCD
+		lcd_display_temperature_fan((int)temp);
+	}
+		
 }
 
 void normalMode(){
@@ -201,7 +222,6 @@ int main(void) {
 	PORTB = 0xFF;
 	
 	
-	
 	sei(); // Enable global interrupts
 
 	while (1) {
@@ -225,9 +245,7 @@ int main(void) {
 						lcd_gotoxy(0, 0);
 						lcd_puts("LED1");
 						lcd_gotoxy(0, 1);
-						lcd_puts("Switched Off");
-						_delay_ms(500);
-						
+						lcd_puts("Switched Off");						
 						
 					}
 					else if (PINB == 0xFD) { // Button 2 (PB1)
@@ -239,7 +257,6 @@ int main(void) {
 						lcd_puts("LED2");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(500);
 
 					}
 					else if (PINB == 0xFB) { // Button 3 (PB2)
@@ -251,11 +268,11 @@ int main(void) {
 						lcd_puts("LED3");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(500);
 					}
 					else if (PINB == 0xF7) { // Button 4 (Fan Control) (PB3) 
 						PORTC = 0x0F;
 						PORTA = 0x00;
+					
 						temperatureCondition(temp);
 						lcd_clrscr();
 						lcd_clrscr();
@@ -263,7 +280,6 @@ int main(void) {
 						lcd_puts("Fans");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(500);
 				
 
 					}
@@ -276,7 +292,6 @@ int main(void) {
 						lcd_puts("LED1, LED2");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(500);
 
 		
 					} 
@@ -289,7 +304,6 @@ int main(void) {
 						lcd_puts("LED1, LED3");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(500);
 
 					}
 					else if (PINB == 0xF9) { 
@@ -301,7 +315,6 @@ int main(void) {
 						lcd_puts("LED1, LED3");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Switched Off");
-						_delay_ms(500);
 
 					}
 					else if (PINB == 0xF8) { // Turn off all LEDs
@@ -313,85 +326,101 @@ int main(void) {
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("All LEDs");
-						_delay_ms(500);
 
 					}
 					else if (PINB == 0xF6) { //  Turn off LED1 (PC0) and Button 4 (Fan Control) (PB3) 
+
 						PORTC = 0x0E;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED1, Fans");
-						_delay_ms(500);
+						temperatureCondition(temp);
 
 					}
 					else if (PINB == 0xF5) { //  Turn off LED2 (PC1) and Button 4 (Fan Control) (PB3)
+
 						PORTC = 0x0D;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED2, Fans");
-						_delay_ms(500);
+						temperatureCondition(temp);
 
 					}
 					else if (PINB == 0xF3) { //  Turn off LED3 (PC2) and Button 4 (Fan Control) (PB3)
+
 						PORTC = 0x0B;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED3, Fans");
-						_delay_ms(500);
+						temperatureCondition(temp);
+
 					}
 					else if (PINB == 0xF4) { //  Turn off LED1, LED2 and Button 4 (Fan Control) (PB3)
+
 						PORTC = 0x0C;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED1, LED2, Fans");
-						_delay_ms(500);
+						temperatureCondition(temp);
 					}
 					else if (PINB == 0xF1) { //  Turn off LED2, LED3 and Button 4 (Fan Control) (PB3)
 						PORTC = 0x09;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED2, LED3, Fans");
-						_delay_ms(500);
+						temperatureCondition(temp);
+
 					}
 					else if (PINB == 0xF2) { //  Turn off LED1, LED3 and Button 4 (Fan Control) (PB3)
+
 						PORTC = 0x0A;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off");
 						lcd_gotoxy(0, 1);
 						lcd_puts("LED1, LED3, Fans");
-						_delay_ms(500);
+						temperatureCondition(temp);
 					}
 					else if (PINB == 0xF0) { //  Turn off LED1, LED2, LED3 and Button 4 (Fan Control) (PB3)
+
 						PORTC = 0x08;
 						PORTA = 0x00;
+
 						lcd_clrscr();
 						lcd_gotoxy(0, 0);
 						lcd_puts("Switched Off all");
 						lcd_gotoxy(0, 1);
 						lcd_puts("Fans and LEDs");
-						_delay_ms(500);
+						temperatureCondition(temp);
 					}
 					else {
 						normalMode();
 						temperatureCondition(temp);
 					}
+					
+					
 					
 			
 					
